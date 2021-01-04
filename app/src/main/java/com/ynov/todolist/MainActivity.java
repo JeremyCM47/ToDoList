@@ -2,8 +2,11 @@ package com.ynov.todolist;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,7 +15,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     private EditText itemET;
     private Button btn;
@@ -30,7 +33,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn = findViewById(R.id.add_btn);
         itemsList = findViewById(R.id.items_list);
 
+        items = FileHelper.readData(this);
+
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
+        itemsList.setAdapter(adapter);
+
         btn.setOnClickListener(this);
+        itemsList.setOnItemClickListener(this);
 
     }
 
@@ -41,11 +50,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String itemEntered = itemET.getText().toString();
                 adapter.add(itemEntered);
                 itemET.setText("");
-
-
-
-                Toast.makeText(this, "Item Added", Toast.LENGTH_SHORT).show();
+                FileHelper.writeData(items, this);
+                Toast.makeText(this, "Tache ajouté", Toast.LENGTH_SHORT).show();
                 break;
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        items.remove(position);
+        adapter.notifyDataSetChanged();
+        Toast.makeText(this, "Suprimé", Toast.LENGTH_SHORT).show();
+    }
+
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Fermer l'application")
+                .setMessage("Voulez vous quitter l'application ?")
+                .setPositiveButton("Oui", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+
+                })
+                .setNegativeButton("Non", null)
+                .show();
     }
 }
