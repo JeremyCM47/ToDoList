@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -41,6 +42,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn.setOnClickListener(this);
         itemsList.setOnItemClickListener(this);
 
+        Button btn = findViewById(R.id.btn_mention);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, MentionActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
     }
 
     @Override
@@ -60,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         items.remove(position);
         adapter.notifyDataSetChanged();
-        Toast.makeText(this, "Suprimé", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Supprimé", Toast.LENGTH_SHORT).show();
     }
 
     public void onBackPressed() {
